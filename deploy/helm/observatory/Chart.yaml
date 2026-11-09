@@ -1,0 +1,6 @@
+apiVersion: v2
+name: observatory
+description: OpenTelemetry-native failure clustering and regression-test generation for LLM apps
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

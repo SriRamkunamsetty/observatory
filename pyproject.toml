@@ -1,0 +1,12 @@
+[project]
+name = "observatory"
+version = "0.1.0"
+description = "OpenTelemetry-native observability for LLM apps: ingest traces, cluster failures, and auto-generate regression tests"
+authors = [
+    {name = "SriRam Kunamsetty", email = "mohansriramkunamsetty@gmail.com"}
+]
+requires-python = ">=3.10"
+[tool.pytest.ini_options]
+pythonpath = ["."]
+[tool.ruff]
+line-length = 110

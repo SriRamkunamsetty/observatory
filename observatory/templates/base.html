@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Chat Observatory{% endblock %}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><a class="skip" href="#main">Skip to main content</a>
+<header><span class="brand"><strong>Chat Observatory</strong></span><nav aria-label="Primary"><a href="/">Overview</a><a href="/clusters">Clusters</a><a href="/regression">Regression tests</a></nav></header>
+<main id="main" tabindex="-1">{% block body %}{% endblock %}</main>
+<footer><nav aria-label="Footer">Chat Observatory · MIT licensed · <a href="/healthz">Health</a> · <a href="/metrics">Metrics</a></nav></footer></body></html>

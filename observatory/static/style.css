@@ -1,0 +1,28 @@
+:root{--bg:#0b1020;--card:#131a2e;--line:#243052;--tx:#e6ebff;--mut:#8a97c2;--ac:#4cc9f0;--btn-tx:#06101f;--ok:#2ecc8f;--okbg:#12382c;--bad:#ff5d6c;--badbg:#431a22;--warn:#f5b84b;--warnbg:#43341a;--track:#1d2747;--head:#0e1530;--code:#0a0f1f;color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--bg:#f6f7fb;--card:#ffffff;--line:#d5daea;--tx:#14182b;--mut:#4a5578;--ac:#0b6fa4;--btn-tx:#ffffff;--ok:#0b6b45;--okbg:#d9f5e8;--bad:#a1122c;--badbg:#fde2e6;--warn:#7a4d00;--warnbg:#fdf0d2;--track:#dde2f2;--head:#eceffa;--code:#eef1fa;color-scheme:light}}
+*{box-sizing:border-box}body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{display:flex;align-items:center;gap:28px;padding:16px 32px;border-bottom:1px solid var(--line);background:var(--head)}
+.brand{font-size:18px;color:var(--ac)}nav a{color:var(--mut);margin-right:20px}nav a:hover{color:var(--tx)}
+main{max-width:1100px;margin:28px auto;padding:0 24px;min-height:70vh}main:focus{outline:none}
+footer{text-align:center;color:var(--mut);padding:24px;font-size:14px}footer a{color:var(--mut)}
+a{color:var(--ac)}a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--card);color:var(--tx);padding:10px 14px;border-radius:0 0 8px 0}.skip:focus{left:0;z-index:10}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cards{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:24px}.card{flex:1 1 200px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card .n{font-size:30px;font-weight:700}.card .l{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.scroll{overflow-x:auto;margin-bottom:8px;border-radius:8px}table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line)}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+.badge{padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600;white-space:nowrap}
+.b-ok{background:var(--okbg);color:var(--ok)}.b-bad{background:var(--badbg);color:var(--bad)}.b-warn{background:var(--warnbg);color:var(--warn)}
+progress{display:block;width:100%;min-width:110px;height:8px;appearance:none;border:0;border-radius:4px;background:var(--track);accent-color:var(--ac)}
+progress::-webkit-progress-bar{background:var(--track);border-radius:4px}progress::-webkit-progress-value{background:var(--ac);border-radius:4px}progress::-moz-progress-bar{background:var(--ac);border-radius:4px}
+pre,code{font-family:ui-monospace,Menlo,Consolas,monospace}pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto;font-size:14px;white-space:pre-wrap}
+h1{font-size:26px;margin:0 0 6px}h2{font-size:18px;margin:28px 0 10px}p.sub,.mut{color:var(--mut)}p.sub{margin:0 0 22px}
+.btn{background:var(--ac);color:var(--btn-tx);border:0;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer;font-size:16px}
+input[type=text],textarea{width:100%;background:var(--code);color:var(--tx);border:1px solid var(--mut);border-radius:8px;padding:10px;font:inherit}
+fieldset{border:1px solid var(--line);border-radius:10px;margin:14px 0;padding:10px 16px}legend{padding:0 6px;font-weight:600}
+label.opt{display:inline-block;margin:4px 22px 4px 0;cursor:pointer}label.fl{display:block;font-weight:600;margin:14px 0 6px}
+.pair{display:flex;flex-wrap:wrap;gap:16px;margin:16px 0}.resp{flex:1 1 300px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.resp h3{margin:0 0 8px;color:var(--ac);font-size:14px;text-transform:uppercase;letter-spacing:.05em}
+@media (max-width:640px){header{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 16px}main{padding:0 16px}nav a{display:inline-block;margin:4px 16px 4px 0}}
+footer nav a{margin:0}

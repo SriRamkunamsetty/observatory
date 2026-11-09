@@ -1,0 +1,20 @@
+# OpenTelemetry Collector config: forward LLM spans to Chat Observatory.
+receivers:
+  otlp:
+    protocols:
+      grpc: {}
+      http: {}
+processors:
+  batch: {}
+exporters:
+  otlphttp/observatory:
+    endpoint: http://observatory:8082      # exporter appends /v1/traces
+    encoding: json
+    headers:
+      X-API-Key: ${env:OBSERVATORY_API_KEY}
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/observatory]

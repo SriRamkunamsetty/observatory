@@ -1,0 +1,15 @@
+services:
+  observatory:
+    build: .
+    ports: ["8082:8082"]
+    environment:
+      API_KEY: ${API_KEY:?set API_KEY in .env}
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env}
+      COOKIE_SECURE: "0"
+    volumes: ["data:/data"]
+    read_only: true
+    tmpfs: ["/tmp", "/dev/shm"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  data: {}
