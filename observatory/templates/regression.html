@@ -1,3 +1,16 @@
 {% extends "base.html" %}{% block title %}Regression tests · Chat Observatory{% endblock %}{% block body %}
-<h1>Generated regression tests</h1><p class="sub">One parametrised pytest case per failure cluster. Provide a <code>model</code> fixture and run it in CI. <a href="/api/regression.py">Download test_regressions.py</a></p>
-<pre tabindex="0" aria-label="Generated pytest file">{{ code }}</pre>{% endblock %}
+<h1>Generated regression tests</h1>
+<p class="sub">Auto-synthesized parameterized pytest suites for CI quality gates.
+{% if is_advanced %}
+<strong>Currently viewing: Advanced ML Suite</strong> (negative assertions, latency SLAs, root-cause taxonomy).
+Switch to <a href="/regression">Standard Suite</a>.
+{% else %}
+<strong>Currently viewing: Standard Suite</strong>.
+Switch to <a href="/regression?suite=advanced">Advanced ML Suite</a>.
+{% endif %}
+</p>
+<p>
+<a class="btn" href="/api/regression.py{{ '?suite=advanced' if is_advanced else '' }}">Download test_regressions.py</a>
+</p>
+<pre tabindex="0" aria-label="Generated pytest file">{{ code }}</pre>
+{% endblock %}

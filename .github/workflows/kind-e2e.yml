@@ -1,0 +1,59 @@
+name: kind-e2e
+on:
+  pull_request:
+    paths:
+      - 'deploy/helm/**'
+      - 'Dockerfile'
+      - 'observatory/**'
+      - '.github/workflows/kind-e2e.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kind-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create KinD Cluster
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: observatory-cluster
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/sriramkunamsetty/observatory:kind-test .
+
+      - name: Load image into KinD
+        run: kind load docker-image ghcr.io/sriramkunamsetty/observatory:kind-test --name observatory-cluster
+
+      - name: Create Kubernetes Secrets
+        run: |
+          kubectl create namespace observatory
+          kubectl create secret generic observatory-secrets \
+            --namespace observatory \
+            --from-literal=API_KEY="kind-api-key" \
+            --from-literal=SECRET_KEY="kind-secret-key-0123456789"
+
+      - name: Install Helm Chart
+        run: |
+          helm install observatory ./deploy/helm/observatory \
+            --namespace observatory \
+            --set image.repository=ghcr.io/sriramkunamsetty/observatory \
+            --set image.tag=kind-test \
+            --set image.pullPolicy=Never \
+            --set persistence.size=1Gi \
+            --wait --timeout=120s
+
+      - name: Verify Pods and Rollout Status
+        run: |
+          kubectl get pods -n observatory
+          kubectl rollout status deployment/observatory -n observatory --timeout=60s
+
+      - name: Port forward and Test Ingestion
+        run: |
+          kubectl port-forward svc/observatory 8082:8082 -n observatory &
+          sleep 3
+          curl -fs http://127.0.0.1:8082/healthz
+          curl -fs http://127.0.0.1:8082/metrics

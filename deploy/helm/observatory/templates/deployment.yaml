@@ -4,10 +4,16 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     app: observatory
+    release: {{ .Release.Name }}
 spec:
-  replicas: 1
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: observatory
@@ -15,6 +21,7 @@ spec:
     metadata:
       labels:
         app: observatory
+        release: {{ .Release.Name }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8082"
@@ -31,12 +38,15 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 8082
+            - name: http
+              containerPort: 8082
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-config
           env:
             - name: DATA_DIR
               value: /data
-            - name: COOKIE_SECURE
-              value: "1"
             - name: API_KEY
               valueFrom:
                 secretKeyRef:
@@ -47,15 +57,31 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.existingSecret }}
                   key: SECRET_KEY
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8082
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
           readinessProbe:
             httpGet:
               path: /healthz
               port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
           livenessProbe:
             httpGet:
               path: /healthz
               port: 8082
             initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 2
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 3"]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           securityContext:

@@ -3,13 +3,50 @@ services:
     build: .
     ports: ["8082:8082"]
     environment:
-      API_KEY: ${API_KEY:?set API_KEY in .env}
-      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env}
+      API_KEY: ${API_KEY:-dev-api-key-1234567890}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-0987654321}
       COOKIE_SECURE: "0"
+      RATE_LIMIT_PER_MIN: "300"
     volumes: ["data:/data"]
     read_only: true
     tmpfs: ["/tmp", "/dev/shm"]
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.108.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./deploy/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    environment:
+      OBSERVATORY_API_KEY: ${API_KEY:-dev-api-key-1234567890}
+    ports:
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+    depends_on:
+      - observatory
+
+  prometheus:
+    image: prom/prometheus:v2.54.0
+    volumes:
+      - ./deploy/prometheus.yaml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - observatory
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./deploy/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
 volumes:
   data: {}

@@ -1,12 +1,30 @@
 [project]
 name = "observatory"
-version = "0.1.0"
-description = "OpenTelemetry-native observability for LLM apps: ingest traces, cluster failures, and auto-generate regression tests"
+version = "0.2.0"
+description = "Enterprise OpenTelemetry-native observability for LLM apps: dense embeddings, failure taxonomy, drift detection, and auto-generated regression suites"
 authors = [
     {name = "SriRam Kunamsetty", email = "mohansriramkunamsetty@gmail.com"}
 ]
 requires-python = ">=3.10"
+dependencies = [
+    "Flask>=3.1.0",
+    "gunicorn>=23.0.0"
+]
+
+[project.optional-dependencies]
+ml = [
+    "scikit-learn>=1.4.0",
+    "numpy>=1.26.0"
+]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.6.9",
+    "playwright>=1.47.0"
+]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
 [tool.ruff]
 line-length = 110

@@ -1,17 +1,41 @@
 {% extends "base.html" %}{% block title %}Overview · Chat Observatory{% endblock %}{% block body %}
-<h1>Overview</h1><p class="sub">LLM traces ingested over OTLP/JSON, with failures grouped into clusters you can turn into regression tests.</p>
+<h1>Overview</h1><p class="sub">OpenTelemetry LLM traces with dense semantic embeddings, automated failure taxonomy, drift detection, and regression test generation.</p>
 <div class="cards">
 <div class="card"><div class="l">Traces</div><div class="n">{{ s.total }}</div></div>
 <div class="card"><div class="l">Failure rate</div><div class="n">{{ '%.1f' % (s.failure_rate*100) }}%</div></div>
 <div class="card"><div class="l">Latency p50</div><div class="n">{{ '%.0f' % s.p50_ms }} ms</div></div>
 <div class="card"><div class="l">Latency p95</div><div class="n">{{ '%.0f' % s.p95_ms }} ms</div></div></div>
-<h2>Top failure clusters</h2>
-<div class="scroll" role="region" tabindex="0" aria-label="Top failure clusters"><table><caption class="sr">Top failure clusters by size</caption>
-<thead><tr><th scope="col">Cluster</th><th scope="col">Traces</th><th scope="col">Share of failures</th><th scope="col">Sample prompt</th></tr></thead><tbody>
-{% for c in clusters %}<tr><th scope="row"><code>{{ c.label }}</code></th><td>{{ c.count }}</td>
-<td><progress value="{{ (c.count / s.failures * 100)|round|int if s.failures else 0 }}" max="100" aria-label="Share of failures for cluster {{ c.label }}"></progress></td>
-<td>{{ c.sample_prompt|truncate(70) }}</td></tr>
-{% else %}<tr><td colspan="4" class="mut">No failures yet.</td></tr>{% endfor %}</tbody></table></div>
+
+<h2>Production drift & distribution telemetry</h2>
+<div class="pair">
+<div class="resp">
+<h3>Drift Status</h3>
+<p><span class="badge {{ 'b-ok' if s.drift.status=='STABLE' else ('b-bad' if s.drift.status=='CRITICAL' else 'b-warn') }}">{{ s.drift.status }}</span></p>
+<p class="mut">{{ s.drift.recommendation }}</p>
+</div>
+<div class="resp">
+<h3>Drift Metrics</h3>
+<p><strong>Centroid Drift:</strong> {{ '%.3f' % s.drift.centroid_drift }} (cosine distance)</p>
+<p><strong>Latency PSI:</strong> {{ '%.3f' % s.drift.latency_psi }} (population stability index)</p>
+</div></div>
+
+<h2>AI/ML failure taxonomy distribution</h2>
+<div class="scroll" role="region" tabindex="0" aria-label="Failure taxonomy distribution"><table><caption class="sr">Failure taxonomy classification breakdown</caption>
+<thead><tr><th scope="col">Category</th><th scope="col">Detected occurrences</th><th scope="col">Share of failures</th></tr></thead><tbody>
+{% for cat, cnt in s.taxonomy.items() if cnt > 0 %}<tr><th scope="row"><code>{{ cat }}</code></th><td>{{ cnt }}</td>
+<td><progress value="{{ (cnt / s.failures * 100)|round|int if s.failures else 0 }}" max="100" aria-label="Share of {{ cat }} failures"></progress></td></tr>
+{% else %}<tr><td colspan="3" class="mut">No classified failures recorded.</td></tr>{% endfor %}</tbody></table></div>
+
+<h2>Semantic failure clusters</h2>
+<div class="scroll" role="region" tabindex="0" aria-label="Top semantic failure clusters"><table><caption class="sr">Top semantic failure clusters by size</caption>
+<thead><tr><th scope="col">Cluster</th><th scope="col">Taxonomy</th><th scope="col">2D Projection</th><th scope="col">Traces</th><th scope="col">Sample prompt</th></tr></thead><tbody>
+{% for c in semantic_clusters %}<tr><th scope="row"><code>{{ c.label }}</code></th>
+<td><span class="badge b-warn">{{ c.taxonomy }}</span></td>
+<td><code>({{ c.x }}, {{ c.y }})</code></td>
+<td>{{ c.count }}</td>
+<td>{{ c.sample_prompt|truncate(60) }}</td></tr>
+{% else %}<tr><td colspan="5" class="mut">No failure clusters yet.</td></tr>{% endfor %}</tbody></table></div>
+
 <h2>Latest failing traces</h2>
 <div class="scroll" role="region" tabindex="0" aria-label="Latest failing traces"><table><caption class="sr">Most recent failing traces</caption>
 <thead><tr><th scope="col">Status</th><th scope="col">Prompt</th><th scope="col">Response</th><th scope="col">Latency</th></tr></thead><tbody>

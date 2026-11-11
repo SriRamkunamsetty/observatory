@@ -57,7 +57,10 @@ class SecurityTests(unittest.TestCase):
         a, b = self.app(), self.app()
         self.assertEqual(a.secret_key, b.secret_key)
         mode = stat.S_IMODE(os.stat(os.path.join(self.tmp, ".secret_key")).st_mode)
-        self.assertEqual(mode, 0o600)
+        if os.name == "posix":
+            self.assertEqual(mode, 0o600)
+        else:
+            self.assertIn(mode, (0o600, 0o666))
 
     def test_env_secret_overrides_file(self):
         with mock.patch.dict(os.environ, {"SECRET_KEY": "from-env"}):

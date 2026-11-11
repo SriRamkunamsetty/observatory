@@ -1,0 +1,33 @@
+name: llm-regression-gate
+on:
+  pull_request:
+    paths:
+      - 'prompts/**'
+      - 'models/**'
+      - 'chains/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch Latest Regression Suite from Observatory
+        run: |
+          curl -fsS "${{ secrets.OBSERVATORY_URL || 'http://localhost:8082' }}/api/regression.py?suite=advanced" \
+            -o test_regressions.py || echo "# No active regression tests" > test_regressions.py
+
+      - name: Install Pytest
+        run: pip install pytest
+
+      - name: Execute LLM Regression Tests
+        run: |
+          python -m pytest test_regressions.py -v --tb=short || exit 1

@@ -1,0 +1,39 @@
+{{- if .Values.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-alerts
+  labels:
+    app: observatory
+    release: {{ .Release.Name }}
+spec:
+  groups:
+    - name: observatory.rules
+      rules:
+        - alert: ChatObservatoryHighFailureRate
+          expr: observatory_failure_rate > {{ .Values.prometheusRule.alerts.highFailureRate.threshold }}
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High LLM Failure Rate Detected on Chat Observatory"
+            description: "Failure rate is {{ `{{` }} $value | humanizePercentage {{ `}}` }} (threshold {{ .Values.prometheusRule.alerts.highFailureRate.threshold }})."
+
+        - alert: ChatObservatorySemanticDriftDetected
+          expr: observatory_centroid_drift > {{ .Values.prometheusRule.alerts.criticalDrift.threshold }}
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Significant Prompt/Response Distribution Drift Detected"
+            description: "Centroid drift distance is {{ `{{` }} $value {{ `}}` }} indicating LLM topic drift or distribution shift."
+
+        - alert: ChatObservatoryP95LatencySpike
+          expr: observatory_latency_p95_ms > 2500
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "LLM P95 Latency SLA Violation"
+            description: "P95 latency is {{ `{{` }} $value {{ `}}` }}ms exceeding 2500ms budget."
+{{- end }}

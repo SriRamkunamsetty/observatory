@@ -1,6 +1,21 @@
 apiVersion: v2
 name: observatory
-description: OpenTelemetry-native failure clustering and regression-test generation for LLM apps
+description: Enterprise OpenTelemetry observability, semantic failure clustering, drift detection, and automated regression testing for LLM applications
 type: application
-version: 0.1.0
-appVersion: "0.1.0"
+version: 0.2.0
+appVersion: "0.2.0"
+home: https://github.com/SriRamkunamsetty/observatory
+sources:
+  - https://github.com/SriRamkunamsetty/observatory
+keywords:
+  - opentelemetry
+  - llm-observability
+  - ai-testing
+  - semantic-clustering
+  - drift-detection
+  - regression-testing
+  - failure-taxonomy
+maintainers:
+  - name: SriRam Kunamsetty
+    email: mohansriramkunamsetty@gmail.com
+    url: https://github.com/SriRamkunamsetty

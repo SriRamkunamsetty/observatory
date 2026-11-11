@@ -1,8 +1,21 @@
 {% extends "base.html" %}{% block title %}Clusters · Chat Observatory{% endblock %}{% block body %}
-<h1>Failure clusters</h1><p class="sub">Failing traces grouped by similarity (token-set Jaccard, adjustable with <code>?threshold=0.5</code>; the 2000 most recent failures are considered).</p>
-<div class="scroll" role="region" tabindex="0" aria-label="Failure clusters"><table><caption class="sr">Failure clusters</caption>
+<h1>Failure clusters</h1><p class="sub">Dual-engine clustering: fast lexical token-set Jaccard and dense semantic vector space with automated taxonomy classification.</p>
+
+<h2>Dense semantic vector clusters</h2>
+<div class="scroll" role="region" tabindex="0" aria-label="Dense semantic clusters"><table><caption class="sr">Dense semantic vector failure clusters</caption>
+<thead><tr><th scope="col">Cluster ID</th><th scope="col">Root taxonomy</th><th scope="col">2D Projection</th><th scope="col">Traces</th><th scope="col">Sample prompt</th><th scope="col">Sample response</th></tr></thead><tbody>
+{% for c in semantic_clusters %}<tr><th scope="row"><code>{{ c.label }}</code></th>
+<td><span class="badge b-warn">{{ c.taxonomy }}</span></td>
+<td><code>({{ c.x }}, {{ c.y }})</code></td>
+<td>{{ c.count }}</td>
+<td>{{ c.sample_prompt|truncate(70) }}</td><td>{{ c.sample_response|truncate(70) }}</td></tr>
+{% else %}<tr><td colspan="6" class="mut">No semantic failure clusters yet.</td></tr>{% endfor %}</tbody></table></div>
+
+<h2>Lexical token clusters</h2>
+<div class="scroll" role="region" tabindex="0" aria-label="Lexical failure clusters"><table><caption class="sr">Lexical token Jaccard clusters</caption>
 <thead><tr><th scope="col">Cluster</th><th scope="col">Status</th><th scope="col">Traces</th><th scope="col">Sample prompt</th><th scope="col">Sample response</th></tr></thead><tbody>
 {% for c in clusters %}<tr><th scope="row"><code>{{ c.label }}</code></th>
 <td><span class="badge {{ 'b-bad' if c.status=='error' else 'b-warn' }}">{{ c.status }}</span></td><td>{{ c.count }}</td>
-<td>{{ c.sample_prompt|truncate(80) }}</td><td>{{ c.sample_response|truncate(80) }}</td></tr>
-{% else %}<tr><td colspan="5" class="mut">No failures yet.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}
+<td>{{ c.sample_prompt|truncate(70) }}</td><td>{{ c.sample_response|truncate(70) }}</td></tr>
+{% else %}<tr><td colspan="5" class="mut">No failures yet.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

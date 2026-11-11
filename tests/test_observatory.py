@@ -105,6 +105,29 @@ class ApiTests(unittest.TestCase):
         self.assertIn("attachment", r.headers["Content-Disposition"])
         compile(r.data.decode(), "dl", "exec")
 
+        r_adv = self.c.get("/api/regression.py?suite=advanced")
+        self.assertIn("attachment", r_adv.headers["Content-Disposition"])
+        compile(r_adv.data.decode(), "dl_adv", "exec")
+
+    def test_taxonomy_and_drift_api(self):
+        self.seed()
+        tax = self.c.get("/api/taxonomy").get_json()
+        self.assertIsInstance(tax, dict)
+        self.assertIn("hallucination", tax)
+
+        drift = self.c.get("/api/drift").get_json()
+        self.assertIn("status", drift)
+        self.assertIn("centroid_drift", drift)
+
+    def test_semantic_clusters_api(self):
+        self.seed()
+        sem = self.c.get("/api/clusters/semantic").get_json()
+        self.assertIsInstance(sem, list)
+        self.assertGreater(len(sem), 0)
+        self.assertIn("taxonomy", sem[0])
+        self.assertIn("x", sem[0])
+        self.assertIn("y", sem[0])
+
     def test_pages_render(self):
         self.seed()
         for path in ("/", "/clusters", "/regression"):
