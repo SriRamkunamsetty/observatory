@@ -20,7 +20,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     DATA_DIR=/data \
     PATH="/home/app/.local/bin:$PATH"
 
-RUN useradd --uid 10001 --create-home app && \
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/* && \
+    useradd --uid 10001 --create-home app && \
     mkdir -p /data && \
     chown -R 10001:10001 /data
 
