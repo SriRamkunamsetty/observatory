@@ -67,7 +67,7 @@ def _calculate_psi(baseline_values: list[float], current_values: list[float], bi
 
     # Calculate unique quantile thresholds from baseline
     raw_cutoffs = [b_sorted[int(i * (n_b - 1) / bins)] for i in range(1, bins)]
-    cutoffs = sorted(list(set(raw_cutoffs)))
+    cutoffs = sorted(set(raw_cutoffs))
     if not cutoffs:
         return 0.0
 

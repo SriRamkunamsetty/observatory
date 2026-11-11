@@ -8,12 +8,11 @@ from observatory.core import Trace
 from observatory.ml import (
     FailureTaxonomy,
     classify_failure,
-    embed_text,
-    cosine_similarity,
-    semantic_cluster,
     detect_drift,
+    embed_text,
     generate_regression_suite,
     project_2d,
+    semantic_cluster,
 )
 
 

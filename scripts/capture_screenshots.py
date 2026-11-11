@@ -9,10 +9,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 os.environ["API_KEY"] = "demo-key"
 
-from playwright.sync_api import sync_playwright  # noqa: E402
-from werkzeug.serving import make_server  # noqa: E402
+from playwright.sync_api import sync_playwright
+from werkzeug.serving import make_server
 
-from observatory.server import create_app  # noqa: E402
+from observatory.server import create_app
 
 PAGES = [("dashboard", "/"), ("clusters", "/clusters"), ("regression-tests", "/regression")]
 OK = [("what is the capital of france", "Paris."), ("summarise this article for me", "Here is a short summary."),

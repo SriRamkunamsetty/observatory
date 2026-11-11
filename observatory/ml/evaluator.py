@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
 from .clustering import SemanticCluster
 from .taxonomy import classify_failure

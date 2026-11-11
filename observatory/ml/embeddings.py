@@ -43,7 +43,7 @@ def _tokenize(text: str) -> list[str]:
 
 def _hash_token(token: str, seed: int) -> float:
     """Deterministic hash mapping a token to a float in [-1.0, 1.0]."""
-    h = hashlib.sha256(f"{token}:{seed}".encode("utf-8")).digest()
+    h = hashlib.sha256(f"{token}:{seed}".encode()).digest()
     raw = int.from_bytes(h[:4], byteorder="big", signed=False)
     # Map unsigned 32-bit int to range [-1.0, 1.0]
     return (raw / 2147483647.5) - 1.0

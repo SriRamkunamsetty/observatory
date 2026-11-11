@@ -8,8 +8,7 @@ from contextlib import closing
 
 from flask import Flask, Response, abort, g, jsonify, render_template, request
 
-from . import core
-from . import ml
+from . import core, ml
 from .security import init_security, require_key
 
 SCHEMA = """CREATE TABLE IF NOT EXISTS traces(id INTEGER PRIMARY KEY AUTOINCREMENT, trace_id TEXT, prompt TEXT,
