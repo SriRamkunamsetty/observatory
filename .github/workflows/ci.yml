@@ -32,7 +32,7 @@ jobs:
           docker run -d --name app -p 8082:8082 -e API_KEY=ci-key -e SECRET_KEY=ci-secret observatory:ci
           for i in $(seq 1 20); do curl -fs localhost:8082/healthz && break || sleep 1; done
           curl -fsS localhost:8082/healthz
-      - uses: aquasecurity/trivy-action@0.28.0
+      - uses: aquasecurity/trivy-action@master
         with:
           image-ref: observatory:ci
           severity: CRITICAL,HIGH
