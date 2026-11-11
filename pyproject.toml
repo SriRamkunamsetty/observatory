@@ -30,4 +30,4 @@ pythonpath = ["."]
 line-length = 110
 
 [tool.ruff.lint]
-ignore = ["S102"]
+ignore = ["S102", "E402"]
