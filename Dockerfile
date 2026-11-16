@@ -1,13 +1,13 @@
 # Multi-stage production Dockerfile for Chat Observatory
 # Build stage
-FROM python:3.12-slim AS builder
+FROM python:3.15-slim AS builder
 
 WORKDIR /build
 COPY requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
 # Final production stage
-FROM python:3.12-slim AS runner
+FROM python:3.15-slim AS runner
 
 LABEL org.opencontainers.image.title="Chat Observatory" \
       org.opencontainers.image.description="Enterprise OpenTelemetry LLM Observability & Regression Testing" \
